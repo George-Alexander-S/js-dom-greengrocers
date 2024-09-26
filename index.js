@@ -71,7 +71,8 @@ function storeitems() {
     const addButton = document.createElement("button")
     addButton.innerHTML = "Add to cart"
     addButton.onclick = function () {
-      cartitems(s.id, s.name)
+      //check if in array
+      cartitems(s.id, s.name, s.price)
     }
 
     li.appendChild(addButton)
@@ -83,8 +84,31 @@ storeitems();
 
 const items = document.querySelector("#items-cart")
 
-function cartitems(id, name) {
+
+function cartitems(id, name, price) {
+  //Check cart array
+  
+  let product = state.cart.find(c => c.id === id)
+  if (!product) {
+    let newobject = {
+      id: id,
+      name: name,
+      price: price,
+      quantity: 1
+    }
+    state.cart.push(newobject);
+  }
+  else {
+    product.quantity ++
+  }
+
+ render()
+
+}
+
+function renderCart(id, name, quantity) {
   const li = document.createElement("li")
+  li.className=`${id}`
   const img = document.createElement("img")
   let imgstring = `/assets/icons/${id}.svg`
   img.src = imgstring
@@ -97,17 +121,65 @@ function cartitems(id, name) {
   const reduce = document.createElement("button")
   reduce.className="quantity-btn remove-btn center"
   reduce.innerHTML="-"
+  reduce.onclick = function () {
+    reduceCount(id);
+  }
   li.appendChild(reduce)
 
   const span = document.createElement("span")
   span.className="quantity-text center"
-  span.innerHTML="1"
+  span.innerHTML=quantity
   li.appendChild(span)
 
   const add = document.createElement("button")
   add.className="quantity-btn add-btn center"
   add.innerHTML="+"
+  add.onclick = function () {
+    increaseCount(id);
+  }
   li.appendChild(add)
 
   items.appendChild(li)
+}
+
+function reduceCount(id) {
+  let found = state.cart.find(c => c.id === id)
+  if (found) {
+    if (found.quantity > 0 && found.quantity > 1) {
+      found.quantity --;
+      render()
+    }
+    else if (found.quantity === 1) {
+      found.quantity --;
+      const element = document.getElementsByClassName(id);
+      while (element.length > 0) {
+        element[0].parentNode.removeChild(element[0]);
+      }
+      render()
+    }
+  }
+}
+
+function increaseCount(id) {
+  let found = state.cart.find(c => c.id === id)
+  if (found) {
+    found.quantity ++;
+    render()
+  }
+}
+
+function render () {
+  items.innerHTML = ''
+
+  let totalspan = document.querySelector(".total-number")
+  let total = 0
+
+  state.cart.map((c) => {
+    if (c.quantity > 0) {
+      renderCart(c.id, c.name, c.quantity)
+      total += c.price * c.quantity
+    }
+  });
+  console.log(state.cart)
+  totalspan.innerHTML = (Math.round(total * 100) / 100).toFixed(2);
 }
