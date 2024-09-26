@@ -55,9 +55,8 @@ const state = {
 };
 
 const store = document.querySelector("#store-list");
-// const store = document.querySelector("item-list store--item-list")
+
 function storeitems() {
-  // store.innerHTML = '';
 
   state.items.map((s) => {
     console.log(s)
@@ -71,7 +70,6 @@ function storeitems() {
     const addButton = document.createElement("button")
     addButton.innerHTML = "Add to cart"
     addButton.onclick = function () {
-      //check if in array
       cartitems(s.id, s.name, s.price)
     }
 
@@ -145,7 +143,7 @@ function renderCart(id, name, quantity) {
 function reduceCount(id) {
   let found = state.cart.find(c => c.id === id)
   if (found) {
-    if (found.quantity > 0 && found.quantity > 1) {
+    if (found.quantity > 1) {
       found.quantity --;
       render()
     }
