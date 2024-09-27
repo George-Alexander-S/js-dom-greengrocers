@@ -143,19 +143,24 @@ function renderCart(id, name, quantity) {
 function reduceCount(id) {
   let found = state.cart.find(c => c.id === id)
   if (found) {
-    if (found.quantity > 1) {
+    if (found.quantity > 0) {
       found.quantity --;
       render()
     }
-    else if (found.quantity === 1) {
-      found.quantity --;
-      const element = document.getElementsByClassName(id);
-      while (element.length > 0) {
-        element[0].parentNode.removeChild(element[0]);
-      }
+    // else if (found.quantity === 1) {
+    //   found.quantity --;
+    //   const element = document.getElementsByClassName(id);
+    //   while (element.length > 0) {
+    //     element[0].parentNode.removeChild(element[0]);
+    //   }
+    //   render()
+    // }
+    if (found.quantity === 0) {
+      state.cart.splice(state.cart.indexOf(found))
       render()
     }
   }
+  console.log(state.cart)
 }
 
 function increaseCount(id) {
